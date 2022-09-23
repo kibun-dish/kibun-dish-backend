@@ -12,7 +12,11 @@ import traceback
 app = Flask(__name__) # ここのtemplate_folder, static_folderを追記
 
 app.config['JSON_AS_ASCII'] = False
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL')
+database_uri = os.environ.get('DATABASE_URL')
+if database_uri and database_uri.startswith("postgres://"):
+    database_uri = database_uri.replace("postgres://", "postgresql://", 1)
+app.config["SQLALCHEMY_DATABASE_URI"] = database_uri
+
 # app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:postgres@localhost:5432/kibun_dish"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = False
