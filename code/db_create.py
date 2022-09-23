@@ -7,8 +7,9 @@ import time
 import os
 
 app = Flask(__name__)
-
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///kibun-dish.db"
+# app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://{username}:{}@localhost:5432/kibun_dish"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:postgres@localhost:5432/kibun_dish"
+# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///kibun-dish.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
 app.config["SECREAT_KEY"] = os.urandom(24)
@@ -16,17 +17,17 @@ app.config["SECREAT_KEY"] = os.urandom(24)
 db = SQLAlchemy(app)
 
 class Food(db.Model):
-    __tablename__ = 'Food'
+    __tablename__ = 'food'
     id   = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(64), nullable=False, unique=True)
 
 class Feel(db.Model):
-    __tablename__ = 'Feel'
+    __tablename__ = 'feel'
     id   = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(64), nullable=False, unique=True)
 
 class Relation(db.Model):
-    __tablename__ = 'Relation'
+    __tablename__ = 'relation'
     id      = db.Column(db.Integer, primary_key=True, autoincrement=True)
     food_id = db.Column(db.Integer) # Foreign key
     feel_id = db.Column(db.Integer) # Foreign key
@@ -35,7 +36,7 @@ class Relation(db.Model):
     created_at = db.Column(db.DATE, default=datetime.date.today())
 
 class User(db.Model):
-    __tablename__ = 'User'
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(64), nullable=False, unique=True)
 
