@@ -1,18 +1,9 @@
-from asyncio.windows_events import NULL
-from dataclasses import dataclass
-from operator import methodcaller
 import os
-from unicodedata import category
-from weakref import ref 
-from xml.etree.ElementPath import prepare_parent
-from flask import Flask, render_template, jsonify
-from flask import request, redirect, url_for
-import json
+from flask import Flask, jsonify
+from flask import request
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import column
 from flask_cors import CORS
 import datetime
-from psycopg2.errors import UniqueViolation
 from sqlalchemy.exc import IntegrityError
 from db_create import User, Food, Feel, Relation
 from db_create import db
@@ -21,8 +12,8 @@ import traceback
 app = Flask(__name__) # ここのtemplate_folder, static_folderを追記
 
 app.config['JSON_AS_ASCII'] = False
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:postgres@localhost:5432/kibun_dish"
-# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///schedule_matching.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL')
+# app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:postgres@localhost:5432/kibun_dish"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = False
 app.config["SECREAT_KEY"] = os.urandom(24)
