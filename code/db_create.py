@@ -15,5 +15,27 @@ db = SQLAlchemy(app)
 
 class Food(db.Model):
     __tablename__ = 'Food'
+    id   = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(64), null=False, unique=True)
+
+class Fell(db.Model):
+    __tablename__ = 'Feel'
+    id   = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(64), null=False, unique=True)
+
+
+class Relation(db.Model):
+    __tablename__ = 'Relation'
+    id      = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    food_id = db.Column(db.Integer) # Foreign key
+    feel_id = db.Column(db.Integer) # Foreign key
+    user_id = db.Column(db.Integer) # Foreign key
+    evaluation = db.Column(db.Integer)
+
+class User(db.Model):
+    __tablename__ = 'User'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(64))
+    name = db.Column(db.String(64), null=False, unique=True)
+
+db.init_app(app)
+db.create_all()
