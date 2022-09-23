@@ -31,6 +31,7 @@ class Relation(db.Model):
     feel_id = db.Column(db.Integer) # Foreign key
     user_id = db.Column(db.Integer) # Foreign key
     evaluation = db.Column(db.Integer)
+    created_at = db.Column(db.DATE)
 
 class User(db.Model):
     __tablename__ = 'User'
