@@ -26,22 +26,23 @@ CORS(app)
 # def index():
 #     return json.dumps()
 
-@app.route('/foods', defaults={'path':''},method=["GET"])
+@app.route('/foods',method=["GET"])
 def show_foods():
     return json.dumps()
 
-@app.route('/feels', defaults={'path':''},method=["GET"])
+@app.route('/feels',method=["GET"])
 def show_feels():
     return json.dumps()
 
-@app.route('/relations', defaults={'path':''},method=["GET"])
+@app.route('/relations',method=["GET"])
 def show_relations():
     return json.dumps()
 
-@app.route('/create/relations', defaults={'path':''},method=["POST"])
+@app.route('/create/relations',method=["POST"])
 def show_relations():
-    # create feels and foods
+    # create feels and foods and relations
     return "200"
+
 
 # @app.route('/<path:path>')
 # def index(path):
