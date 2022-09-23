@@ -29,8 +29,8 @@ CORS(app)
 # def index():
 #     return json.dumps()
 
+# show
 @app.route('/food', method=["GET"])
-
 def show_foods():
     all_food = db.session.query(Food).all()
     send_data = []
@@ -48,7 +48,7 @@ def show_feels():
         send_data.append(current_input)
     return jsonify(send_data)
 
-@app.route('/relation', defaults={'path':''},method=["GET"])
+@app.route('/relation', method=["GET"])
 def show_relations():
     all_relation = db.session.query(Relation).all()
     send_data = []
@@ -64,17 +64,12 @@ def show_relations():
         send_data.append(current_data)
     return jsonify(send_data)
 
-@app.route('/create/relation', defaults={'path':''},method=["POST"])
-def register_relations():
+# register
+@app.route('/relation', method=["POST"])
+def register_relation():
     # create feels and foods
     post_data = request.get_json()
     print(post_data)
-    new_food  = Food(name = post_data['food_name'])
-    new_feel  = Feel(name = post_data['feel_name'])
-    db.session.add(new_food)
-    db.session.commit()
-    db.session.feel(new_feel)
-    db.session.commit()
     food_id = Food.query.filter(Food.name == post_data['food_name']).get(id)
     feel_id = Food.query.filter(Feel.name == post_data['feel_name']).get(id)
     today   = datetime.datetime().today()
@@ -83,6 +78,21 @@ def register_relations():
     db.commit()
     return jsonify({})
 
+@app.route('/food', method=["POST"])
+def register_food():
+    post_data = request.get_json()
+    food = Food(name=post_data['food_name'])
+    db.session.add(food)
+    db.session.commit()
+    return jsonify({})
+
+@app.route('/feel', method=["POST"])
+def register_feel():
+    post_data = request.get_json()
+    feel = Feel(name=post_data['feel_name'])
+    db.session.add(feel)
+    db.session.commit()
+    return jsonify({})
 
 # @app.route('/<path:path>')
 # def index(path):
