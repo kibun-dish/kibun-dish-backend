@@ -71,7 +71,7 @@ def register_relation():
     post_data = request.get_json()
     print(post_data)
     food_id = Food.query.filter(Food.name == post_data['food_name']).get(id)
-    feel_id = Food.query.filter(Feel.name == post_data['feel_name']).get(id)
+    feel_id = Feel.query.filter(Feel.name == post_data['feel_name']).get(id)
     today   = datetime.datetime().today()
     new_relation = Relation(user_id=1, food_id=food_id, feel_id=feel_id, evaluation=post_data['evaluation'], created_at=today)
     db.add(new_relation)
