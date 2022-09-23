@@ -35,10 +35,6 @@ CORS(app)
 # def index():
 #     return json.dumps()
 
-@app.route('/', methods=["GET"])
-def index():
-    return "hello"
-
 @app.route('/food', methods=["GET"])
 def show_foods():
     all_food = db.session.query(Food).all()
