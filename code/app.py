@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from operator import methodcaller
 import os
 from unicodedata import category
@@ -10,6 +11,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import column
 from flask_cors import CORS
 import datetime
+from db_create import User, Food, Feel, Relation
+from db_create import db
 
 app = Flask(__name__) # ここのtemplate_folder, static_folderを追記
 
@@ -26,22 +29,58 @@ CORS(app)
 # def index():
 #     return json.dumps()
 
-@app.route('/foods', defaults={'path':''},method=["GET"])
+@app.route('/food', method=["GET"])
 def show_foods():
-    return json.dumps()
+    all_food = db.session.query(Food).all()
+    send_data = []
+    for now in all_food:
+        current_input = {'id':now.id, 'name':now.name}
+        send_data.append(current_input)
+    return jsonify(send_data)
 
-@app.route('/feels', defaults={'path':''},method=["GET"])
+@app.route('/feel', defaults={'path':''},method=["GET"])
 def show_feels():
-    return json.dumps()
+    all_feel = db.session.query(Feel).all()
+    send_data = []
+    for now in all_feel:
+        current_input = {'id':now.id, 'name':now.name}
+        send_data.append(current_input)
+    return jsonify(send_data)
 
-@app.route('/relations', defaults={'path':''},method=["GET"])
+@app.route('/relation', defaults={'path':''},method=["GET"])
 def show_relations():
-    return json.dumps()
+    all_relation = db.session.query(Relation).all()
+    send_data = []
+    for now in all_relation:
+        food_name = db.session.query(Food).filter(Food.id == now.food_id).first().name
+        feel_name = db.session.query(Feel).filter(Feel.id == now.feel_id).first().name
+        current_data = {
+            'id':now.id,
+            'evaluation':now.evaluation,
+            'food':{'id':now.food_id, 'name':food_name},
+            'feel':{'id':now.feel_id, 'name':feel_name},
+        }
+        send_data.append(current_data)
+    return jsonify(send_data)
 
-@app.route('/create/relations', defaults={'path':''},method=["POST"])
-def show_relations():
+@app.route('/create/relation', defaults={'path':''},method=["POST"])
+def register_relations():
     # create feels and foods
-    return "200"
+    post_data = request.get_json()
+    print(post_data)
+    new_food  = Food(name = post_data['food_name'])
+    new_feel  = Feel(name = post_data['feel_name'])
+    db.session.add(new_food)
+    db.session.commit()
+    db.session.feel(new_feel)
+    db.session.commit()
+    food_id = Food.query.filter(Food.name == post_data['food_name']).get(id)
+    feel_id = Food.query.filter(Feel.name == post_data['feel_name']).get(id)
+    today   = datetime.datetime().today()
+    new_relation = Relation(user_id=1, food_id=food_id, feel_id=feel_id, evaluation=post_data['evaluation'], created_at=today)
+    db.add(new_relation)
+    db.commit()
+    return jsonify({})
 
 # @app.route('/<path:path>')
 # def index(path):
