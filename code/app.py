@@ -30,6 +30,7 @@ CORS(app)
 #     return json.dumps()
 
 @app.route('/food', method=["GET"])
+
 def show_foods():
     all_food = db.session.query(Food).all()
     send_data = []
@@ -81,6 +82,7 @@ def register_relations():
     db.add(new_relation)
     db.commit()
     return jsonify({})
+
 
 # @app.route('/<path:path>')
 # def index(path):
