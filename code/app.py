@@ -38,7 +38,7 @@ def show_foods():
         for now in all_food:
             if type(now.name) == bytes:
                 now.name = now.name.decode('unicode-escape')
-            current_input = {'id':now.id, 'name':now.name.decode('unicode-escape')}
+            current_input = {'id':now.id, 'name':now.name}
             send_data.append(current_input)
         return jsonify(send_data)
     elif request.method == "POST":
