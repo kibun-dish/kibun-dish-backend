@@ -46,5 +46,6 @@ code
   'feel_name':name,
   'evaluation':n
 }]
+
 *nは任意の自然数
 ```
