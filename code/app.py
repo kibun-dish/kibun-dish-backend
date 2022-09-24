@@ -36,13 +36,14 @@ def show_foods():
         all_food = db.session.query(Food).all()
         send_data = []
         for now in all_food:
-            current_input = {'id':now.id, 'name':now.name}
+            current_input = {'id':now.id, 'name':now.name.decode('unicode-escape')}
             send_data.append(current_input)
         return jsonify(send_data)
     elif request.method == "POST":
         post_data = request.get_json()
         try:
-            new_food  = Food(name = post_data['name'])
+            post_name = post_data['name'].encode('unicode-escape')
+            new_food  = Food(name = post_name)
             db.session.add(new_food)
             db.session.commit()   
             print("saved food") 
@@ -51,7 +52,7 @@ def show_foods():
             db.session.rollback()
         posted = {
             "id":new_food.id,
-            "name":new_food.name, 
+            "name":post_data['name'], 
         }    
         return jsonify([posted])
 
@@ -61,13 +62,14 @@ def show_feels():
         all_feel = db.session.query(Feel).all()
         send_data = []
         for now in all_feel:
-            current_input = {'id':now.id, 'name':now.name}
+            current_input = {'id':now.id, 'name':now.name.decode('unicode-escape')}
             send_data.append(current_input)
         return jsonify(send_data)
     elif request.method == "POST":
         post_data = request.get_json()
         try:
-            new_feel  = Feel(name = post_data['name'])
+            post_name = post_data['name'].encode('unicode-escape')
+            new_feel  = Feel(name = post_name)
             db.session.add(new_feel)
             db.session.commit()   
             print("saved feel") 
@@ -76,7 +78,7 @@ def show_feels():
             db.session.rollback()
         posted = {
             "id":new_feel.id,
-            "name":new_feel.name, 
+            "name":post_data['name'], 
         }    
         return jsonify([posted])
 
