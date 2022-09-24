@@ -33,7 +33,7 @@ class Relation(db.Model):
     food_id = db.Column(db.Integer) # Foreign key
     feel_id = db.Column(db.Integer) # Foreign key
     user_id = db.Column(db.Integer) # Foreign key
-    evaluation = db.Column(db.Integer)
+    evaluation = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DATE, default=datetime.date.today())
 
 class User(db.Model):

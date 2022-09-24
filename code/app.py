@@ -30,85 +30,76 @@ CORS(app)
 # def index():
 #     return json.dumps()
 
-@app.route('/food', methods=["GET"])
+@app.route('/food', methods=["GET","POST"])
 def show_foods():
-    all_food = db.session.query(Food).all()
-    send_data = []
-    for now in all_food:
-        current_input = {'id':now.id, 'name':now.name}
-        send_data.append(current_input)
-    return jsonify(send_data)
-
-@app.route('/feel',methods=["GET"])
-def show_feels():
-    all_feel = db.session.query(Feel).all()
-    send_data = []
-    for now in all_feel:
-        current_input = {'id':now.id, 'name':now.name}
-        send_data.append(current_input)
-    return jsonify(send_data)
-
-@app.route('/relation',methods=["GET"])
-def show_relations():
-    all_relation = db.session.query(Relation).all()
-    send_data = []
-    for now in all_relation:
-        food_name = db.session.query(Food).filter(Food.id == now.food_id).first().name
-        feel_name = db.session.query(Feel).filter(Feel.id == now.feel_id).first().name
-        current_data = {
-            'id':now.id,
-            'evaluation':now.evaluation,
-            'food':{'id':now.food_id, 'name':food_name},
-            'feel':{'id':now.feel_id, 'name':feel_name},
-        }
-        send_data.append(current_data)
-    return jsonify(send_data)
-
-@app.route('/create/relation',methods=["POST"])
-def register_relations():
-    # create feels and foods
-    post_data = request.get_json()
-    print(post_data)
-    try:
-        new_food  = Food(name = post_data['food_name'])
-        db.session.add(new_food)
-        db.session.commit()   
-        print("saved food")    
-    except IntegrityError as e:
-        db.session.rollback()
-        print(traceback.format_exc())
-        
-    try:
-        new_feel  = Feel(name = post_data['feel_name'])
-        db.session.add(new_feel)
-        db.session.commit()
-        print("saved feel")
-    except IntegrityError as e:
-        db.session.rollback()
-        print(traceback.format_exc())
-         
-    food = Food.query.filter(Food.name == post_data['food_name']).first()
-    feel = Feel.query.filter(Feel.name == post_data['feel_name']).first()
-    if food is not None and feel is not None:
-        today   = datetime.date.today()
-        new_relation = Relation(user_id=1, food_id=food.id, feel_id=feel.id, evaluation=int(post_data['evaluation']), created_at=today)
+    if request.method == "GET":
+        all_food = db.session.query(Food).all()
+        send_data = []
+        for now in all_food:
+            current_input = {'id':now.id, 'name':now.name}
+            send_data.append(current_input)
+        return jsonify(send_data)
+    elif request.method == "POST":
+        post_data = request.get_json()
         try:
+            new_food  = Food(name = post_data['name'])
+            db.session.add(new_food)
+            db.session.commit()   
+            print("saved food") 
+        except IntegrityError as e:
+            print(traceback.format_exc())
+            db.session.rollback()
+
+@app.route('/feel',methods=["GET","POST"])
+def show_feels():
+    if request.method == "GET":
+        all_feel = db.session.query(Feel).all()
+        send_data = []
+        for now in all_feel:
+            current_input = {'id':now.id, 'name':now.name}
+            send_data.append(current_input)
+        return jsonify(send_data)
+    elif request.method == "POST":
+        post_data = request.get_json()
+        try:
+            new_feel  = Feel(name = post_data['name'])
+            db.session.add(new_feel)
+            db.session.commit()   
+            print("saved feel") 
+        except IntegrityError as e:
+            print(traceback.format_exc())
+            db.session.rollback()
+
+@app.route('/relation',methods=["GET","POST"])
+def show_relations():
+    if request.method == "GET":
+        all_relation = db.session.query(Relation).all()
+        send_data = []
+        for now in all_relation:
+            food_name = db.session.query(Food).filter(Food.id == now.food_id).first().name
+            feel_name = db.session.query(Feel).filter(Feel.id == now.feel_id).first().name
+            current_data = {
+                'id':now.id,
+                'evaluation':now.evaluation,
+                'food':{'id':now.food_id, 'name':food_name},
+                'feel':{'id':now.feel_id, 'name':feel_name},
+            }
+            send_data.append(current_data)
+        return jsonify(send_data)
+    elif request.method == "POST":
+        post_data = request.get_json()
+        print(post_data)
+        try:
+            food_id  = int(post_data['food_id'])
+            feel_id  = int(post_data['feel_id'])
+            evaluation  = int(post_data['evaluation'])
+            today = datetime.date.today()
+            new_relation = Relation(user_id=1, food_id=food_id, feel_id=feel_id, evaluation=evaluation, created_at=today)
             db.session.add(new_relation)
             db.session.commit()
             print("saved relation")
         except IntegrityError as e:
-            db.session.rollback()
-            print(traceback.format_exc())
-        return jsonify([
-            {
-                'id':new_relation.id,
-                'food_id': new_relation.food_id,
-                'feel_id': new_relation.feel_id,
-                'evaluation':new_relation.evaluation,
-            }
-            ])
-    return jsonify([{"Error": "Did you confirm own request?"}])
-
+            db.session.rollback()    
 
 # @app.route('/<path:path>')
 # def index(path):
