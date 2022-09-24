@@ -49,6 +49,11 @@ def show_foods():
         except IntegrityError as e:
             print(traceback.format_exc())
             db.session.rollback()
+        posted = {
+            "id":new_food.id,
+            "name":new_food.name, 
+        }    
+        return jsonify([posted])
 
 @app.route('/feel',methods=["GET","POST"])
 def show_feels():
@@ -69,6 +74,12 @@ def show_feels():
         except IntegrityError as e:
             print(traceback.format_exc())
             db.session.rollback()
+        posted = {
+            "id":new_feel.id,
+            "name":new_feel.name, 
+        }    
+        return jsonify([posted])
+
 
 @app.route('/relation',methods=["GET","POST"])
 def show_relations():
@@ -99,8 +110,15 @@ def show_relations():
             db.session.commit()
             print("saved relation")
         except IntegrityError as e:
-            db.session.rollback()    
-
+            db.session.rollback()
+        posted = {
+            "user_id":new_relation.user_id,
+            "food_id":new_relation.food_id,
+            "feel_id":new_relation.feel_id,
+            "evaluation":new_relation.evaluation, 
+        }    
+        return jsonify([posted])
+    
 # @app.route('/<path:path>')
 # def index(path):
 #     return render_template('index.html') 
