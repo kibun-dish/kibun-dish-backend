@@ -36,6 +36,8 @@ def show_foods():
         all_food = db.session.query(Food).all()
         send_data = []
         for now in all_food:
+            if now.name == bytes:
+                now.name = now.name.decode('unicode-escape')
             current_input = {'id':now.id, 'name':now.name.decode('unicode-escape')}
             send_data.append(current_input)
         return jsonify(send_data)
@@ -62,7 +64,9 @@ def show_feels():
         all_feel = db.session.query(Feel).all()
         send_data = []
         for now in all_feel:
-            current_input = {'id':now.id, 'name':now.name.decode('unicode-escape')}
+            if now.name == bytes:
+                now.name = now.name.decode('unicode-escape')
+            current_input = {'id':now.id, 'name':now.name}
             send_data.append(current_input)
         return jsonify(send_data)
     elif request.method == "POST":
